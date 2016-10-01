@@ -13,7 +13,9 @@ It should have these features:
 1. √ hello world
 2. √ what's 1 + 1 (hard-coded), and take the answer then display it
 3. √ give a PointValue to the answer, and display it
-4. make it work with iterating over three questions
-5. make it generate the questions from permutations
-6. make it randomize the question order
-7. make it keep the past questions and show incorrectly answered items more frequently
+4. change so that the answer is only calculated on a button press
+5. make it work in a loop, tallying correct and incorrect answers
+6. make it work with three questions, iterating over them
+7. make it generate the questions from permutations
+8. make it randomize the question order
+9. make it keep the past questions and show incorrectly answered items more frequently
