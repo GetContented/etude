@@ -7,10 +7,12 @@ main =
 
 -- MODEL
 
-type Model = NoModel
+type alias Model =
+  { answer : Maybe String }
 
 model : Model
-model = NoModel
+model =
+  { answer = Just "" }
 
 -- UPDATE
 
