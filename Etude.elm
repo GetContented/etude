@@ -8,11 +8,11 @@ main =
 -- MODEL
 
 type alias Model =
-  { answer : Maybe String }
+  { answer : String }
 
 init : Model
 init =
-  { answer = Just "" }
+  { answer = "" }
 
 -- UPDATE
 
@@ -23,14 +23,12 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     ChangeAnswer newAnswer ->
-      { model | answer = Just newAnswer }
+      { model | answer = newAnswer }
 
 -- VIEW
 
 getAnswer : Model -> String
-getAnswer { answer } =
-  Maybe.withDefault "" answer
-
+getAnswer { answer } = answer
 
 view : Model -> Html Msg
 view model =
