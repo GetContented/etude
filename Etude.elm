@@ -3,30 +3,39 @@ import Html.Events exposing (onInput)
 import Html.App as App
 
 main =
-  App.beginnerProgram { model = model, update = update, view = view }
+  App.beginnerProgram { model = init, update = update, view = view }
 
 -- MODEL
 
 type alias Model =
   { answer : Maybe String }
 
-model : Model
-model =
+init : Model
+init =
   { answer = Just "" }
 
 -- UPDATE
 
-type Msg = NoOp
+type Msg =
+  ChangeAnswer String
 
 update : Msg -> Model -> Model
-update _ model = model
+update msg model =
+  case msg of
+    ChangeAnswer newAnswer ->
+      { model | answer = Just newAnswer }
 
 -- VIEW
 
+getAnswer : Model -> String
+getAnswer { answer } =
+  Maybe.withDefault "" answer
+
+
 view : Model -> Html Msg
-view _ =
+view model =
   div []
     [ text "What's 1 + 1 ?"
-    , input [onInput (always NoOp)] []
-    ]
+    , input [onInput ChangeAnswer] []
+    , text (getAnswer model)]
 
