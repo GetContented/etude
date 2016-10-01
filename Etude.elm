@@ -1,5 +1,5 @@
 import Html exposing (Html, div, text, input, p, button)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 import Html.App as App
 
 main =
@@ -8,14 +8,18 @@ main =
 -- MODEL
 
 type alias Model =
-  { currentAnswer : String
+  { lastAnswerCorrect : Maybe Bool
+  , currentAnswer : String
   , marks : Int
+  , attempts : Int
   }
 
 init : Model
 init =
-  { currentAnswer = ""
+  { lastAnswerCorrect = Nothing
+  , currentAnswer = ""
   , marks = 0
+  , attempts = 0
   }
 
 correctAnswer : String
@@ -31,18 +35,19 @@ pointValue model =
 
 -- UPDATE
 
-type Msg =
-  ChangeCurrentAnswer String
+type Msg = ChangeCurrentAnswer String
+         | SubmitAnswer
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     ChangeCurrentAnswer newAnswer ->
-      let
-        updatedCurrentAnswerModel =
-          { model | currentAnswer = newAnswer }
-      in
-        { updatedCurrentAnswerModel | marks = pointValue updatedCurrentAnswerModel }
+      { model | currentAnswer = newAnswer }
+    SubmitAnswer ->
+      { model
+      | lastAnswerCorrect = Just (isCorrect model)
+      , attempts = model.attempts + 1
+      , marks = model.marks + pointValue model }
 
 -- VIEW
 
@@ -51,16 +56,18 @@ getAnswer { currentAnswer } = currentAnswer
 
 correctnessMessage : Model -> String
 correctnessMessage model =
-  if isCorrect model then
-    "Correct"
-  else
-    "Incorrect"
+  case model.lastAnswerCorrect of
+    Nothing -> "No Answers yet"
+    Just True -> "Correct"
+    Just False -> "Incorrect"
 
 view : Model -> Html Msg
 view model =
   div []
     [ p [] [text "What's 1 + 1 ?"]
-    , p [] [input [onInput ChangeCurrentAnswer] []]
+    , p [] [ input [onInput ChangeCurrentAnswer] []
+           , button [onClick SubmitAnswer] [text "Submit Answer"]
+           ]
     , p [] [text (" " ++ correctnessMessage model ++ ". ")]
-    , p [] [text (" Points: " ++ toString (pointValue model))]]
+    , p [] [text (" Points: " ++ toString model.marks ++ " out of " ++ toString model.attempts)]]
 
