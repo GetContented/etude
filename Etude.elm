@@ -1,4 +1,5 @@
 import Html exposing (Html, div, text, input)
+import Html.Events exposing (onInput)
 import Html.App as App
 
 main =
@@ -24,6 +25,6 @@ view : Model -> Html Msg
 view _ =
   div []
     [ text "What's 1 + 1 ?"
-    , input [] []
+    , input [onInput (always NoOp)] []
     ]
 
