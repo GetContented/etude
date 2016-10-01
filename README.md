@@ -15,7 +15,8 @@ It should have these features:
 3. √ give a PointValue to the answer, and display it
 4. √ change so that the answer is only calculated on a button press
 5. √ make it work in a loop, tallying correct and incorrect answers
-6. make it work with three questions, iterating over them
-7. make it generate the questions from permutations
-8. make it randomize the question order
-9. make it keep the past questions and show incorrectly answered items more frequently
+6. extract the mechanism to deal with questions, and the single 1 + 1 hard-coded question into data
+7. make it work with three questions, iterating over them
+8. make it generate the questions from permutations
+9. make it randomize the question order
+10. make it keep the past questions and show incorrectly answered items more frequently
