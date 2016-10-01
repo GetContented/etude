@@ -1,4 +1,4 @@
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, input)
 import Html.App as App
 
 main =
@@ -22,5 +22,8 @@ update _ model = model
 
 view : Model -> Html Msg
 view _ =
-  div [] [text "Hello, world!"]
+  div []
+    [ text "What's 1 + 1 ?"
+    , input [] []
+    ]
 
