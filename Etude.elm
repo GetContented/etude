@@ -14,6 +14,9 @@ init : Model
 init =
   { answer = "" }
 
+correctAnswer : String
+correctAnswer = "2"
+
 -- UPDATE
 
 type Msg =
@@ -30,10 +33,17 @@ update msg model =
 getAnswer : Model -> String
 getAnswer { answer } = answer
 
+correctnessMessage : Model -> String
+correctnessMessage model =
+  if getAnswer model == correctAnswer then
+    "Correct"
+  else
+    "Incorrect"
+
 view : Model -> Html Msg
 view model =
   div []
     [ text "What's 1 + 1 ?"
     , input [onInput ChangeAnswer] []
-    , text (getAnswer model)]
+    , text (correctnessMessage model)]
 
