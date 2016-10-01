@@ -1,4 +1,4 @@
-import Html exposing (Html, div, text, input, p)
+import Html exposing (Html, div, text, input, p, button)
 import Html.Events exposing (onInput)
 import Html.App as App
 
@@ -8,13 +8,13 @@ main =
 -- MODEL
 
 type alias Model =
-  { answer : String
+  { currentAnswer : String
   , marks : Int
   }
 
 init : Model
 init =
-  { answer = ""
+  { currentAnswer = ""
   , marks = 0
   }
 
@@ -32,22 +32,22 @@ pointValue model =
 -- UPDATE
 
 type Msg =
-  ChangeAnswer String
+  ChangeCurrentAnswer String
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    ChangeAnswer newAnswer ->
+    ChangeCurrentAnswer newAnswer ->
       let
-        updatedAnswerModel =
-          { model | answer = newAnswer }
+        updatedCurrentAnswerModel =
+          { model | currentAnswer = newAnswer }
       in
-        { updatedAnswerModel | marks = pointValue updatedAnswerModel }
+        { updatedCurrentAnswerModel | marks = pointValue updatedCurrentAnswerModel }
 
 -- VIEW
 
 getAnswer : Model -> String
-getAnswer { answer } = answer
+getAnswer { currentAnswer } = currentAnswer
 
 correctnessMessage : Model -> String
 correctnessMessage model =
@@ -60,7 +60,7 @@ view : Model -> Html Msg
 view model =
   div []
     [ p [] [text "What's 1 + 1 ?"]
-    , p [] [input [onInput ChangeAnswer] []]
+    , p [] [input [onInput ChangeCurrentAnswer] []]
     , p [] [text (" " ++ correctnessMessage model ++ ". ")]
     , p [] [text (" Points: " ++ toString (pointValue model))]]
 
