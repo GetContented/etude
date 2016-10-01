@@ -10,7 +10,7 @@ It should have these features:
 
 ## Development Stages
 
-1. hello world
+1. √ hello world
 2. what's 1 + 1 (hard-coded)
 3. give a PointValue to the answer, and display it
 4. make it work with three questions
