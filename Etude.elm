@@ -8,14 +8,26 @@ main =
 -- MODEL
 
 type alias Model =
-  { answer : String }
+  { answer : String
+  , marks : Int
+  }
 
 init : Model
 init =
-  { answer = "" }
+  { answer = ""
+  , marks = 0
+  }
 
 correctAnswer : String
 correctAnswer = "2"
+
+isCorrect : Model -> Bool
+isCorrect model =
+  getAnswer model == correctAnswer
+
+pointValue : Model -> Int
+pointValue model =
+  if isCorrect model then 1 else 0
 
 -- UPDATE
 
@@ -26,7 +38,11 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     ChangeAnswer newAnswer ->
-      { model | answer = newAnswer }
+      let
+        updatedAnswerModel =
+          { model | answer = newAnswer }
+      in
+        { updatedAnswerModel | marks = pointValue updatedAnswerModel }
 
 -- VIEW
 
@@ -35,7 +51,7 @@ getAnswer { answer } = answer
 
 correctnessMessage : Model -> String
 correctnessMessage model =
-  if getAnswer model == correctAnswer then
+  if isCorrect model then
     "Correct"
   else
     "Incorrect"
@@ -45,5 +61,6 @@ view model =
   div []
     [ text "What's 1 + 1 ?"
     , input [onInput ChangeAnswer] []
-    , text (correctnessMessage model)]
+    , text (" " ++ correctnessMessage model ++ ". ")
+    , text (" Points: " ++ toString (pointValue model))]
 
