@@ -7,11 +7,16 @@ main =
 
 -- MODEL
 
+type alias Question = String
+type alias Answer = String
+type alias QuestionAnswer = (Question, Answer)
+
 type alias Model =
   { lastAnswerCorrect : Maybe Bool
   , currentAnswer : String
   , marks : Int
   , attempts : Int
+  , questionsWithAnswers : List QuestionAnswer
   }
 
 init : Model
@@ -20,6 +25,7 @@ init =
   , currentAnswer = ""
   , marks = 0
   , attempts = 0
+  , questionsWithAnswers = [("1 + 1", "2")]
   }
 
 correctAnswer : String
