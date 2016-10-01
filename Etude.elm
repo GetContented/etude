@@ -1,4 +1,4 @@
-import Html exposing (Html, div, text, input)
+import Html exposing (Html, div, text, input, p)
 import Html.Events exposing (onInput)
 import Html.App as App
 
@@ -59,8 +59,8 @@ correctnessMessage model =
 view : Model -> Html Msg
 view model =
   div []
-    [ text "What's 1 + 1 ?"
-    , input [onInput ChangeAnswer] []
-    , text (" " ++ correctnessMessage model ++ ". ")
-    , text (" Points: " ++ toString (pointValue model))]
+    [ p [] [text "What's 1 + 1 ?"]
+    , p [] [input [onInput ChangeAnswer] []]
+    , p [] [text (" " ++ correctnessMessage model ++ ". ")]
+    , p [] [text (" Points: " ++ toString (pointValue model))]]
 
