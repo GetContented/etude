@@ -62,7 +62,16 @@ update msg model =
       { model
       | lastAnswerCorrect = Just (isCorrect model)
       , attempts = model.attempts + 1
-      , marks = model.marks + pointValue model }
+      , marks = model.marks + pointValue model
+      , questionsWithCorrectAnswers = moveHeadToEnd model.questionsWithCorrectAnswers
+      }
+
+moveHeadToEnd : List QuestionAndCorrectAnswer -> List QuestionAndCorrectAnswer
+moveHeadToEnd list =
+  case list of
+    [] -> []
+    head :: tail ->
+      tail ++ [head]
 
 -- VIEW
 
