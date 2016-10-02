@@ -9,14 +9,15 @@ main =
 
 type alias Question = String
 type alias Answer = String
-type alias QuestionAnswer = (Question, Answer)
+type alias CorrectAnswer = Answer
+type alias QuestionAndCorrectAnswer = (Question, CorrectAnswer)
 
 type alias Model =
   { lastAnswerCorrect : Maybe Bool
   , currentAnswer : Answer
   , marks : Int
   , attempts : Int
-  , questionsWithAnswers : List QuestionAnswer
+  , questionsWithAnswers : List QuestionAndCorrectAnswer
   }
 
 init : Model
@@ -28,17 +29,20 @@ init =
   , questionsWithAnswers = [("1 + 1", "2")]
   }
 
-correctAnswer : Model -> Answer
-correctAnswer { questionsWithAnswers } =
+getCorrectAnswer : Model -> Answer
+getCorrectAnswer { questionsWithAnswers } =
   case questionsWithAnswers of
     [] ->
       ""
-    (_, answer) :: _ ->
-      answer
+    (_, correctAnswer) :: _ ->
+      correctAnswer
+
+getAnswer : Model -> String
+getAnswer { currentAnswer } = currentAnswer
 
 isCorrect : Model -> Bool
 isCorrect model =
-  getAnswer model == correctAnswer model
+  getAnswer model == getCorrectAnswer model
 
 pointValue : Model -> Int
 pointValue model =
@@ -61,9 +65,6 @@ update msg model =
       , marks = model.marks + pointValue model }
 
 -- VIEW
-
-getAnswer : Model -> String
-getAnswer { currentAnswer } = currentAnswer
 
 correctnessMessage : Model -> String
 correctnessMessage model =
