@@ -1,9 +1,15 @@
 import Html exposing (Html, div, text, input, p, button)
 import Html.Events exposing (onInput, onClick)
 import Html.App as App
+import Random
 
 main =
-  App.beginnerProgram { model = init, update = update, view = view }
+  App.program
+    { init = init
+    , update = update
+    , subscriptions = subscriptions
+    , view = view
+    }
 
 -- MODEL
 
@@ -20,14 +26,20 @@ type alias Model =
   , questionsWithCorrectAnswers : List QuestionAndCorrectAnswer
   }
 
-init : Model
+init : (Model, Cmd Msg)
 init =
-  { lastAnswerCorrect = Nothing
-  , currentAnswer = ""
-  , marks = 0
-  , attempts = 0
-  , questionsWithCorrectAnswers = generatedQAPairs
-  }
+  let
+    qaPairs =
+      generatedQAPairs
+    questionsLength =
+      List.length generatedQAPairs
+  in
+    ({ lastAnswerCorrect = Nothing
+      , currentAnswer = ""
+      , marks = 0
+      , attempts = 0
+      , questionsWithCorrectAnswers = qaPairs
+      }, shuffleQuestions questionsLength)
 
 generatedQAPairs : List QuestionAndCorrectAnswer
 generatedQAPairs =
@@ -65,20 +77,42 @@ pointValue model =
 -- UPDATE
 
 type Msg = ChangeCurrentAnswer String
+         | ShuffleQuestions
          | SubmitAnswer
+         | UpdateQuestionsOrder (List Int)
 
-update : Msg -> Model -> Model
+shuffleQuestions : Int -> Cmd Msg
+shuffleQuestions questionCount =
+  Random.generate UpdateQuestionsOrder (Random.list questionCount (Random.int 0 questionCount))
+
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ChangeCurrentAnswer newAnswer ->
-      { model | currentAnswer = newAnswer }
+      ({ model | currentAnswer = newAnswer }, Cmd.none)
     SubmitAnswer ->
-      { model
-      | lastAnswerCorrect = Just (isCorrect model)
-      , attempts = model.attempts + 1
-      , marks = model.marks + pointValue model
-      , questionsWithCorrectAnswers = moveHeadToEnd model.questionsWithCorrectAnswers
-      }
+      ({ model
+       | lastAnswerCorrect = Just (isCorrect model)
+       , attempts = model.attempts + 1
+       , marks = model.marks + pointValue model
+       , questionsWithCorrectAnswers = moveHeadToEnd model.questionsWithCorrectAnswers
+       }, Cmd.none)
+    ShuffleQuestions ->
+      let
+        questionCount = List.length model.questionsWithCorrectAnswers
+      in
+        (model, shuffleQuestions questionCount)
+    UpdateQuestionsOrder newIndexes ->
+      let
+        zippedQuestions =
+          List.map2 (,) newIndexes model.questionsWithCorrectAnswers
+        reorderedZip =
+          List.sortBy (\(index, _) -> index) zippedQuestions
+        reorderedQuestions =
+          List.map (\(_, item) -> item) reorderedZip
+      in
+        ({ model | questionsWithCorrectAnswers = reorderedQuestions }, Cmd.none)
+
 
 moveHeadToEnd : List QuestionAndCorrectAnswer -> List QuestionAndCorrectAnswer
 moveHeadToEnd list =
@@ -86,6 +120,13 @@ moveHeadToEnd list =
     [] -> []
     head :: tail ->
       tail ++ [head]
+
+
+-- SUBSCRIPTIONS
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none
 
 -- VIEW
 
