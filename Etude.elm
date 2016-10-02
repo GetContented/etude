@@ -85,6 +85,17 @@ shuffleQuestions : Int -> Cmd Msg
 shuffleQuestions questionCount =
   Random.generate UpdateQuestionsOrder (Random.list questionCount (Random.int 0 questionCount))
 
+reorderedListWithNewIndexes : List a -> List Int -> List a
+reorderedListWithNewIndexes items indexes =
+  let
+    zippedItems =
+      List.map2 (,) indexes items
+    reorderedZip =
+      List.sortBy (\(index, _) -> index) zippedItems
+  in
+    List.map (\(_, item) -> item) reorderedZip
+
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -104,12 +115,8 @@ update msg model =
         (model, shuffleQuestions questionCount)
     UpdateQuestionsOrder newIndexes ->
       let
-        zippedQuestions =
-          List.map2 (,) newIndexes model.questionsWithCorrectAnswers
-        reorderedZip =
-          List.sortBy (\(index, _) -> index) zippedQuestions
         reorderedQuestions =
-          List.map (\(_, item) -> item) reorderedZip
+          reorderedListWithNewIndexes model.questionsWithCorrectAnswers newIndexes
       in
         ({ model | questionsWithCorrectAnswers = reorderedQuestions }, Cmd.none)
 
