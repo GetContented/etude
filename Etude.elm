@@ -26,7 +26,10 @@ init =
   , currentAnswer = ""
   , marks = 0
   , attempts = 0
-  , questionsWithCorrectAnswers = [("1 + 1", "2")]
+  , questionsWithCorrectAnswers =
+    [ ("1 + 1", "2")
+    , ("7 + 5", "12")
+    , ("8 + 5", "13")]
   }
 
 getCorrectAnswer : Model -> Answer
