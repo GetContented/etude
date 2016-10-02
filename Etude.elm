@@ -13,7 +13,7 @@ type alias QuestionAnswer = (Question, Answer)
 
 type alias Model =
   { lastAnswerCorrect : Maybe Bool
-  , currentAnswer : String
+  , currentAnswer : Answer
   , marks : Int
   , attempts : Int
   , questionsWithAnswers : List QuestionAnswer
@@ -28,12 +28,17 @@ init =
   , questionsWithAnswers = [("1 + 1", "2")]
   }
 
-correctAnswer : String
-correctAnswer = "2"
+correctAnswer : Model -> Answer
+correctAnswer { questionsWithAnswers } =
+  case questionsWithAnswers of
+    [] ->
+      ""
+    (_, answer) :: _ ->
+      answer
 
 isCorrect : Model -> Bool
 isCorrect model =
-  getAnswer model == correctAnswer
+  getAnswer model == correctAnswer model
 
 pointValue : Model -> Int
 pointValue model =
