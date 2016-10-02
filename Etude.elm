@@ -28,9 +28,6 @@ init =
   , marks = 0
   , attempts = 0
   , questionsWithCorrectAnswers = generatedQAPairs
-    --[ ("1 + 1", "2")
-    --, ("7 + 5", "12")
-    --, ("8 + 5", "13")]
   }
 
 generatedQAPairs : List QuestionAndCorrectAnswer
