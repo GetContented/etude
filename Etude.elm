@@ -78,6 +78,16 @@ moveHeadToEnd list =
 
 -- VIEW
 
+view : Model -> Html Msg
+view model =
+  div []
+    [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
+    , p [] [ input [onInput ChangeCurrentAnswer] []
+           , button [onClick SubmitAnswer] [text "Submit Answer"]
+           ]
+    , p [] [text (" " ++ correctnessMessage model ++ ". ")]
+    , p [] [text (" Points: " ++ toString model.marks ++ " out of " ++ toString model.attempts)]]
+
 correctnessMessage : Model -> String
 correctnessMessage model =
   case model.lastAnswerCorrect of
@@ -92,15 +102,3 @@ getQuestion { questionsWithCorrectAnswers } =
       ""
     (question, _) :: _ ->
       question
-
-
-view : Model -> Html Msg
-view model =
-  div []
-    [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
-    , p [] [ input [onInput ChangeCurrentAnswer] []
-           , button [onClick SubmitAnswer] [text "Submit Answer"]
-           ]
-    , p [] [text (" " ++ correctnessMessage model ++ ". ")]
-    , p [] [text (" Points: " ++ toString model.marks ++ " out of " ++ toString model.attempts)]]
-
