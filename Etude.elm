@@ -17,7 +17,7 @@ type alias Model =
   , currentAnswer : Answer
   , marks : Int
   , attempts : Int
-  , questionsWithAnswers : List QuestionAndCorrectAnswer
+  , questionsWithCorrectAnswers : List QuestionAndCorrectAnswer
   }
 
 init : Model
@@ -26,12 +26,12 @@ init =
   , currentAnswer = ""
   , marks = 0
   , attempts = 0
-  , questionsWithAnswers = [("1 + 1", "2")]
+  , questionsWithCorrectAnswers = [("1 + 1", "2")]
   }
 
 getCorrectAnswer : Model -> Answer
-getCorrectAnswer { questionsWithAnswers } =
-  case questionsWithAnswers of
+getCorrectAnswer { questionsWithCorrectAnswers } =
+  case questionsWithCorrectAnswers of
     [] ->
       ""
     (_, correctAnswer) :: _ ->
