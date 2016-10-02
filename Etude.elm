@@ -82,10 +82,19 @@ correctnessMessage model =
     Just True -> "Correct"
     Just False -> "Incorrect"
 
+getQuestion : Model -> Answer
+getQuestion { questionsWithCorrectAnswers } =
+  case questionsWithCorrectAnswers of
+    [] ->
+      ""
+    (question, _) :: _ ->
+      question
+
+
 view : Model -> Html Msg
 view model =
   div []
-    [ p [] [text "What's 1 + 1 ?"]
+    [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
     , p [] [ input [onInput ChangeCurrentAnswer] []
            , button [onClick SubmitAnswer] [text "Submit Answer"]
            ]
