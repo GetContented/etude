@@ -1,6 +1,7 @@
 import Html exposing (Html, div, text, input, p, button)
 import Html.Events exposing (onInput, onClick)
 import Html.App as App
+import List.Extra exposing (permutations, transpose)
 
 main =
   App.beginnerProgram { model = init, update = update, view = view }
@@ -26,11 +27,25 @@ init =
   , currentAnswer = ""
   , marks = 0
   , attempts = 0
-  , questionsWithCorrectAnswers =
-    [ ("1 + 1", "2")
-    , ("7 + 5", "12")
-    , ("8 + 5", "13")]
+  , questionsWithCorrectAnswers = generatedQAPairs
+    --[ ("1 + 1", "2")
+    --, ("7 + 5", "12")
+    --, ("8 + 5", "13")]
   }
+
+generatedQAPairs : List QuestionAndCorrectAnswer
+generatedQAPairs =
+  let
+    range =
+      [1..30]
+    listOfIntPairs =
+      List.concatMap (\num -> List.map ((,) num) range) range
+  in
+    List.map
+      (\(num1, num2) ->
+        (toString num1 ++ " + " ++ toString num2, toString (num1 + num2)))
+      listOfIntPairs
+
 
 getCorrectAnswer : Model -> Answer
 getCorrectAnswer { questionsWithCorrectAnswers } =
