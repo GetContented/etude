@@ -16,7 +16,7 @@ main =
 type alias Question = String
 type alias Answer = String
 type alias CorrectAnswer = Answer
-type alias QuestionAndCorrectAnswer = (Question, CorrectAnswer)
+type alias QAPair = (Question, CorrectAnswer)
 
 type alias Exercise =
   { question : Question
@@ -30,7 +30,7 @@ type alias Model =
   , currentAnswer : Answer
   , marks : Int
   , attempts : Int
-  , questionsWithCorrectAnswers : List QuestionAndCorrectAnswer
+  , questionsWithCorrectAnswers : List QAPair
   }
 
 init : (Model, Cmd Msg)
@@ -48,7 +48,7 @@ init =
       , questionsWithCorrectAnswers = qaPairs
       }, shuffleQuestions questionsLength)
 
-generatedQAPairs : List QuestionAndCorrectAnswer
+generatedQAPairs : List QAPair
 generatedQAPairs =
   let
     range =
@@ -69,7 +69,7 @@ exerciseInit =
   , attemptCount = 0
   }
 
-exerciseFromQAPair : QuestionAndCorrectAnswer -> Exercise
+exerciseFromQAPair : QAPair -> Exercise
 exerciseFromQAPair (question, answer) =
   { exerciseInit
   | question = question
