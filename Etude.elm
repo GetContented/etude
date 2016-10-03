@@ -46,7 +46,7 @@ init =
       , marks = 0
       , attempts = 0
       , exercises = exercises
-      }, shuffleQuestions exercisesLength)
+      }, shuffleExercises exercisesLength)
 
 generatedQAPairs : List QAPair
 generatedQAPairs =
@@ -102,13 +102,13 @@ pointValue model =
 -- UPDATE
 
 type Msg = ChangeCurrentAnswer String
-         | ShuffleQuestions
+         | ShuffleExercises
          | SubmitAnswer
-         | UpdateQuestionsOrder (List Int)
+         | UpdateExercisesOrder (List Int)
 
-shuffleQuestions : Int -> Cmd Msg
-shuffleQuestions questionCount =
-  Random.generate UpdateQuestionsOrder (Random.list questionCount (Random.int 0 questionCount))
+shuffleExercises : Int -> Cmd Msg
+shuffleExercises questionCount =
+  Random.generate UpdateExercisesOrder (Random.list questionCount (Random.int 0 questionCount))
 
 reorderedListWithNewIndexes : List a -> List Int -> List a
 reorderedListWithNewIndexes items indexes =
@@ -133,17 +133,17 @@ update msg model =
        , marks = model.marks + pointValue model
        , exercises = rotateList model.exercises
        }, Cmd.none)
-    ShuffleQuestions ->
+    ShuffleExercises ->
       let
         questionCount = List.length model.exercises
       in
-        (model, shuffleQuestions questionCount)
-    UpdateQuestionsOrder newIndexes ->
+        (model, shuffleExercises questionCount)
+    UpdateExercisesOrder newIndexes ->
       let
-        reorderedQuestions =
+        reorderedExercises =
           reorderedListWithNewIndexes model.exercises newIndexes
       in
-        ({ model | exercises = reorderedQuestions }, Cmd.none)
+        ({ model | exercises = reorderedExercises }, Cmd.none)
 
 
 rotateList : List a -> List a
