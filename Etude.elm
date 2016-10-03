@@ -16,7 +16,7 @@ main =
 type alias Question = String
 type alias Answer = String
 type alias CorrectAnswer = Answer
-type alias QAPair = (Question, CorrectAnswer)
+type alias QAPair = (Question, Answer)
 
 type alias Exercise =
   { question : Question
