@@ -81,12 +81,25 @@ generatedExercises =
   List.map exerciseFromQAPair generatedQAPairs
 
 getCorrectAnswer : Model -> Answer
-getCorrectAnswer { exercises } =
+getCorrectAnswer model =
+  applyToCurrentExerciseWithDefault model "" .answer
+
+applyToCurrentExerciseWithDefault : Model -> a -> (Exercise -> a) -> a
+applyToCurrentExerciseWithDefault model default f =
+  let
+    maybeCurrentExercise =
+      getMaybeCurrentExercise model
+    maybeResult = Maybe.map f maybeCurrentExercise
+  in
+    Maybe.withDefault default maybeResult
+
+getMaybeCurrentExercise : Model -> Maybe Exercise
+getMaybeCurrentExercise { exercises } =
   case exercises of
     [] ->
-      ""
+      Nothing
     exercise :: _ ->
-      exercise.answer
+      Just exercise
 
 getAttempt : Model -> String
 getAttempt { currentAttempt } = currentAttempt
@@ -184,9 +197,5 @@ correctnessMessage model =
     Just False -> "Incorrect"
 
 getQuestion : Model -> Answer
-getQuestion { exercises } =
-  case exercises of
-    [] ->
-      ""
-    exercise :: _ ->
-      exercise.question
+getQuestion model =
+  applyToCurrentExerciseWithDefault model "" .question
