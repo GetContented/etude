@@ -30,23 +30,23 @@ type alias Model =
   , currentAnswer : Answer
   , marks : Int
   , attempts : Int
-  , questionsWithCorrectAnswers : List QAPair
+  , exercises : List Exercise
   }
 
 init : (Model, Cmd Msg)
 init =
   let
-    qaPairs =
-      generatedQAPairs
-    questionsLength =
-      List.length generatedQAPairs
+    exercises =
+      generatedExercises
+    exercisesLength =
+      List.length exercises
   in
     ({ lastAnswerCorrect = Nothing
       , currentAnswer = ""
       , marks = 0
       , attempts = 0
-      , questionsWithCorrectAnswers = qaPairs
-      }, shuffleQuestions questionsLength)
+      , exercises = exercises
+      }, shuffleQuestions exercisesLength)
 
 generatedQAPairs : List QAPair
 generatedQAPairs =
@@ -81,12 +81,12 @@ generatedExercises =
   List.map exerciseFromQAPair generatedQAPairs
 
 getCorrectAnswer : Model -> Answer
-getCorrectAnswer { questionsWithCorrectAnswers } =
-  case questionsWithCorrectAnswers of
+getCorrectAnswer { exercises } =
+  case exercises of
     [] ->
       ""
-    (_, correctAnswer) :: _ ->
-      correctAnswer
+    exercise :: _ ->
+      exercise.answer
 
 getAnswer : Model -> String
 getAnswer { currentAnswer } = currentAnswer
@@ -131,19 +131,19 @@ update msg model =
        | lastAnswerCorrect = Just (isCorrect model)
        , attempts = model.attempts + 1
        , marks = model.marks + pointValue model
-       , questionsWithCorrectAnswers = rotateList model.questionsWithCorrectAnswers
+       , exercises = rotateList model.exercises
        }, Cmd.none)
     ShuffleQuestions ->
       let
-        questionCount = List.length model.questionsWithCorrectAnswers
+        questionCount = List.length model.exercises
       in
         (model, shuffleQuestions questionCount)
     UpdateQuestionsOrder newIndexes ->
       let
         reorderedQuestions =
-          reorderedListWithNewIndexes model.questionsWithCorrectAnswers newIndexes
+          reorderedListWithNewIndexes model.exercises newIndexes
       in
-        ({ model | questionsWithCorrectAnswers = reorderedQuestions }, Cmd.none)
+        ({ model | exercises = reorderedQuestions }, Cmd.none)
 
 
 rotateList : List a -> List a
@@ -180,9 +180,9 @@ correctnessMessage model =
     Just False -> "Incorrect"
 
 getQuestion : Model -> Answer
-getQuestion { questionsWithCorrectAnswers } =
-  case questionsWithCorrectAnswers of
+getQuestion { exercises } =
+  case exercises of
     [] ->
       ""
-    (question, _) :: _ ->
-      question
+    exercise :: _ ->
+      exercise.question
