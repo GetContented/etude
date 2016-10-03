@@ -93,6 +93,19 @@ applyToCurrentExerciseWithDefault model default f =
   in
     Maybe.withDefault default maybeResult
 
+updateCurrentExercise : Model -> (Exercise -> Exercise) -> Model
+updateCurrentExercise model updater =
+  case getMaybeCurrentExercise model of
+    Nothing ->
+      model
+    Just exercise ->
+      let
+        updatedExercise = updater exercise
+        exercisesTail = List.drop 1 model.exercises
+      in
+        { model | exercises = updatedExercise :: exercisesTail }
+
+
 getMaybeCurrentExercise : Model -> Maybe Exercise
 getMaybeCurrentExercise { exercises } =
   case exercises of
