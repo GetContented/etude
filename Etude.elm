@@ -127,12 +127,16 @@ update msg model =
     ChangeCurrentAnswer newAnswer ->
       ({ model | currentAnswer = newAnswer }, Cmd.none)
     SubmitAnswer ->
-      ({ model
-       | lastAnswerCorrect = Just (isCorrect model)
-       , attempts = model.attempts + 1
-       , marks = model.marks + pointValue model
-       , exercises = rotateList model.exercises
-       }, Cmd.none)
+      let
+        newModel =
+          { model
+          | lastAnswerCorrect = Just (isCorrect model)
+          , attempts = model.attempts + 1
+          , marks = model.marks + pointValue model
+          , exercises = rotateList model.exercises
+          }
+      in
+        (newModel, Cmd.none)
     ShuffleExercises ->
       let
         questionCount = List.length model.exercises
