@@ -28,8 +28,6 @@ type alias Exercise =
 type alias Model =
   { lastAttemptCorrect : Maybe Bool
   , currentAttempt : Answer
-  , marks : Int
-  , attempts : Int
   , exercises : List Exercise
   }
 
@@ -43,10 +41,16 @@ init =
   in
     ({ lastAttemptCorrect = Nothing
       , currentAttempt = ""
-      , marks = 0
-      , attempts = 0
       , exercises = exercises
       }, shuffleExercises exercisesLength)
+
+correctTally : Model -> Int
+correctTally { exercises } =
+  List.sum <| List.map .correctCount exercises
+
+attemptTally : Model -> Int
+attemptTally { exercises } =
+  List.sum <| List.map .attemptCount exercises
 
 generatedQAPairs : List QAPair
 generatedQAPairs =
@@ -163,7 +167,7 @@ update msg model =
       updatedModel =
         { modelWithUpdatedExercise
         | lastAttemptCorrect = Just (isCorrect model)
-        , exercises = rotateList model.exercises
+        , exercises = rotateList modelWithUpdatedExercise.exercises
         }
       in
         (updatedModel, Cmd.none)
@@ -204,7 +208,7 @@ view model =
            , button [onClick SubmitAttempt] [text "Submit Answer"]
            ]
     , p [] [text (" " ++ correctnessMessage model ++ ". ")]
-    , p [] [text (" Points: " ++ toString model.marks ++ " out of " ++ toString model.attempts)]]
+    , p [] [text (" Points: " ++ toString (correctTally model) ++ " out of " ++ toString (attemptTally model))]]
 
 correctnessMessage : Model -> String
 correctnessMessage model =
