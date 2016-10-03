@@ -140,8 +140,8 @@ shuffleExercises : Int -> Cmd Msg
 shuffleExercises questionCount =
   Random.generate UpdateExercisesOrder (Random.list questionCount (Random.int 0 questionCount))
 
-reorderedListWithNewIndexes : List a -> List Int -> List a
-reorderedListWithNewIndexes items indexes =
+reorderListByIndexes : List a -> List Int -> List a
+reorderListByIndexes items indexes =
   let
     zippedItems =
       List.map2 (,) indexes items
@@ -179,7 +179,7 @@ update msg model =
     UpdateExercisesOrder newIndexes ->
       let
         reorderedExercises =
-          reorderedListWithNewIndexes model.exercises newIndexes
+          reorderListByIndexes model.exercises newIndexes
       in
         ({ model | exercises = reorderedExercises }, Cmd.none)
 
