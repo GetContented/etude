@@ -2,6 +2,7 @@ import Html exposing (Html, div, text, input, p, button)
 import Html.Events exposing (onInput, onClick)
 import Html.App as App
 import Random
+import List.Extra as LE
 
 main =
   App.program
@@ -191,6 +192,26 @@ rotateList list =
     head :: tail ->
       tail ++ [head]
 
+correctnessRatio : Exercise -> Float
+correctnessRatio exercise =
+  if exercise.attemptCount == 0 then
+    0
+  else
+    toFloat exercise.correctCount / toFloat exercise.attemptCount
+
+sortByCorrectnessRatio : List Exercise -> List Exercise
+sortByCorrectnessRatio exercises =
+  let
+    sortedExercises = List.sortBy correctnessRatio exercises
+    grouper x y =
+      let
+        xRatio = correctnessRatio x
+        yRatio = correctnessRatio y
+      in
+        xRatio == yRatio
+    groups = LE.groupWhile grouper exercises
+  in
+    exercises -- TODO finish this - it's incomplete
 
 -- SUBSCRIPTIONS
 
