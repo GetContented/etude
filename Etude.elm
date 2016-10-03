@@ -18,6 +18,13 @@ type alias Answer = String
 type alias CorrectAnswer = Answer
 type alias QuestionAndCorrectAnswer = (Question, CorrectAnswer)
 
+type alias Exercise =
+  { question : Question
+  , answer : Answer
+  , correctCount : Int
+  , attemptCount : Int
+  }
+
 type alias Model =
   { lastAnswerCorrect : Maybe Bool
   , currentAnswer : Answer
@@ -54,6 +61,24 @@ generatedQAPairs =
         (toString num1 ++ " + " ++ toString num2, toString (num1 + num2)))
       permutationPairs
 
+exerciseInit : Exercise
+exerciseInit =
+  { question = ""
+  , answer = ""
+  , correctCount = 0
+  , attemptCount = 0
+  }
+
+exerciseFromQAPair : QuestionAndCorrectAnswer -> Exercise
+exerciseFromQAPair (question, answer) =
+  { exerciseInit
+  | question = question
+  , answer = answer
+  }
+
+generatedExercises : List Exercise
+generatedExercises =
+  List.map exerciseFromQAPair generatedQAPairs
 
 getCorrectAnswer : Model -> Answer
 getCorrectAnswer { questionsWithCorrectAnswers } =
@@ -106,7 +131,7 @@ update msg model =
        | lastAnswerCorrect = Just (isCorrect model)
        , attempts = model.attempts + 1
        , marks = model.marks + pointValue model
-       , questionsWithCorrectAnswers = moveHeadToEnd model.questionsWithCorrectAnswers
+       , questionsWithCorrectAnswers = rotateList model.questionsWithCorrectAnswers
        }, Cmd.none)
     ShuffleQuestions ->
       let
@@ -121,8 +146,8 @@ update msg model =
         ({ model | questionsWithCorrectAnswers = reorderedQuestions }, Cmd.none)
 
 
-moveHeadToEnd : List QuestionAndCorrectAnswer -> List QuestionAndCorrectAnswer
-moveHeadToEnd list =
+rotateList : List a -> List a
+rotateList list =
   case list of
     [] -> []
     head :: tail ->
