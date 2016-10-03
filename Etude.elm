@@ -57,7 +57,7 @@ generatedQAPairs : List QAPair
 generatedQAPairs =
   let
     range =
-      [1..30]
+      [1..3]
     permutationPairs =
       List.concatMap (\num -> List.map ((,) num) range) range
   in
@@ -170,17 +170,18 @@ update msg model =
         | lastAttemptCorrect = Just (isCorrect model)
         , exercises = rotateList modelWithUpdatedExercise.exercises
         }
+      exerciseCount = List.length updatedModel.exercises
       in
-        (updatedModel, Cmd.none)
+        (updatedModel, shuffleExercises exerciseCount)
     ShuffleExercises ->
       let
-        questionCount = List.length model.exercises
+        exerciseCount = List.length model.exercises
       in
-        (model, shuffleExercises questionCount)
+        (model, shuffleExercises exerciseCount)
     UpdateExercisesOrder newIndexes ->
       let
         reorderedExercises =
-          reorderListByIndexes model.exercises newIndexes
+          sortByCorrectnessRatioThenIndexes model.exercises newIndexes
       in
         ({ model | exercises = reorderedExercises }, Cmd.none)
 
@@ -217,7 +218,7 @@ sortByCorrectnessRatioThenIndexes exercises indexes =
     indexesAndExerciseGroups =
       List.foldr
         (\exerciseGroup (resultList, indexesRemaining) ->
-          (resultList ++ [(exerciseGroup, List.take (List.length exerciseGroup) indexesRemaining)]
+          ((exerciseGroup, List.take (List.length exerciseGroup) indexesRemaining) :: resultList
           , List.drop (List.length exerciseGroup) indexesRemaining))
         ([], indexes)
         exerciseGroups

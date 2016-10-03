@@ -22,3 +22,5 @@ It should have these features:
 10. make it keep the past questions and show incorrectly answered items more frequently
   * √ adjust the model to keep the tally of correct answers and attempts for each Question as well as the answer, then convert the marks and attempts total functions to use this new model. To do this, we'll replace internal use of QuestionAndCorrectAnswer with Exercise.
   * replace the naive exercise rotation function with a function that does "past correctness weighted sorting" instead. Note that this should sort based on correctness ratio: unanswered = 0, all else is correctCount / attemptCount and where they are the same number, it should shuffle them randomly.
+
+  todo: fix appaerent logic bug in sortByCorrectnessRatioThenIndexes and refactor it
