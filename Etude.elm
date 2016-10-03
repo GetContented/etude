@@ -201,17 +201,36 @@ correctnessRatio exercise =
 
 sortByCorrectnessRatio : List Exercise -> List Exercise
 sortByCorrectnessRatio exercises =
+  List.sortBy correctnessRatio exercises
+
+sortByCorrectnessRatioThenIndexes : List Exercise -> List Int -> List Exercise
+sortByCorrectnessRatioThenIndexes exercises indexes =
   let
-    sortedExercises = List.sortBy correctnessRatio exercises
+    sortedExercises = sortByCorrectnessRatio exercises
     grouper x y =
       let
         xRatio = correctnessRatio x
         yRatio = correctnessRatio y
       in
         xRatio == yRatio
-    groups = LE.groupWhile grouper exercises
+    exerciseGroups = LE.groupWhile grouper sortedExercises
+    indexesAndExerciseGroups =
+      List.foldr
+        (\exerciseGroup (resultList, indexesRemaining) ->
+          (resultList ++ [(exerciseGroup, List.take (List.length exerciseGroup) indexesRemaining)]
+          , List.drop (List.length exerciseGroup) indexesRemaining))
+        ([], indexes)
+        exerciseGroups
+    exerciseGroupIndexesPairs =
+      (\(x, _) -> x) indexesAndExerciseGroups
+    reorderedExerciseGroups =
+      List.map
+        (\(exerciseGroup, indexes) ->
+          reorderListByIndexes exerciseGroup indexes)
+        exerciseGroupIndexesPairs
   in
-    exercises -- TODO finish this - it's incomplete
+    List.concat reorderedExerciseGroups
+
 
 -- SUBSCRIPTIONS
 
