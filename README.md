@@ -20,4 +20,5 @@ It should have these features:
 8. √ make it generate the questions from permutations
 9. √ make it randomize the question order
 10. make it keep the past questions and show incorrectly answered items more frequently
-  * adjust the model to keep the tally of correct answers and attempts for each Question as well as the answer, then convert the marks and attempts total functions to use this new model. To do this, we'll replace internal use of QuestionAndCorrectAnswer with Exercise.
+  * √ adjust the model to keep the tally of correct answers and attempts for each Question as well as the answer, then convert the marks and attempts total functions to use this new model. To do this, we'll replace internal use of QuestionAndCorrectAnswer with Exercise.
+  * replace the naive exercise rotation function with a function that does "past correctness weighted sorting" instead
