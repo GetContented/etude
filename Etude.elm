@@ -154,15 +154,19 @@ update msg model =
       ({ model | currentAttempt = newAttempt }, Cmd.none)
     SubmitAttempt ->
       let
-        newModel =
-          { model
-          | lastAttemptCorrect = Just (isCorrect model)
-          , attempts = model.attempts + 1
-          , marks = model.marks + pointValue model
-          , exercises = rotateList model.exercises
-          }
+      updateExercise exercise =
+        { exercise
+        | attemptCount = exercise.attemptCount + 1
+        , correctCount = exercise.correctCount + pointValue model
+        }
+      modelWithUpdatedExercise = updateCurrentExercise model updateExercise
+      updatedModel =
+        { modelWithUpdatedExercise
+        | lastAttemptCorrect = Just (isCorrect model)
+        , exercises = rotateList model.exercises
+        }
       in
-        (newModel, Cmd.none)
+        (updatedModel, Cmd.none)
     ShuffleExercises ->
       let
         questionCount = List.length model.exercises
