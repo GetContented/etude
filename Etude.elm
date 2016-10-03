@@ -26,8 +26,8 @@ type alias Exercise =
   }
 
 type alias Model =
-  { lastAnswerCorrect : Maybe Bool
-  , currentAnswer : Answer
+  { lastAttemptCorrect : Maybe Bool
+  , currentAttempt : Answer
   , marks : Int
   , attempts : Int
   , exercises : List Exercise
@@ -41,8 +41,8 @@ init =
     exercisesLength =
       List.length exercises
   in
-    ({ lastAnswerCorrect = Nothing
-      , currentAnswer = ""
+    ({ lastAttemptCorrect = Nothing
+      , currentAttempt = ""
       , marks = 0
       , attempts = 0
       , exercises = exercises
@@ -88,12 +88,12 @@ getCorrectAnswer { exercises } =
     exercise :: _ ->
       exercise.answer
 
-getAnswer : Model -> String
-getAnswer { currentAnswer } = currentAnswer
+getAttempt : Model -> String
+getAttempt { currentAttempt } = currentAttempt
 
 isCorrect : Model -> Bool
 isCorrect model =
-  getAnswer model == getCorrectAnswer model
+  getAttempt model == getCorrectAnswer model
 
 pointValue : Model -> Int
 pointValue model =
@@ -101,9 +101,9 @@ pointValue model =
 
 -- UPDATE
 
-type Msg = ChangeCurrentAnswer String
+type Msg = ChangeCurrentAttempt String
          | ShuffleExercises
-         | SubmitAnswer
+         | SubmitAttempt
          | UpdateExercisesOrder (List Int)
 
 shuffleExercises : Int -> Cmd Msg
@@ -124,13 +124,13 @@ reorderedListWithNewIndexes items indexes =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    ChangeCurrentAnswer newAnswer ->
-      ({ model | currentAnswer = newAnswer }, Cmd.none)
-    SubmitAnswer ->
+    ChangeCurrentAttempt newAttempt ->
+      ({ model | currentAttempt = newAttempt }, Cmd.none)
+    SubmitAttempt ->
       let
         newModel =
           { model
-          | lastAnswerCorrect = Just (isCorrect model)
+          | lastAttemptCorrect = Just (isCorrect model)
           , attempts = model.attempts + 1
           , marks = model.marks + pointValue model
           , exercises = rotateList model.exercises
@@ -170,16 +170,16 @@ view : Model -> Html Msg
 view model =
   div []
     [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
-    , p [] [ input [onInput ChangeCurrentAnswer] []
-           , button [onClick SubmitAnswer] [text "Submit Answer"]
+    , p [] [ input [onInput ChangeCurrentAttempt] []
+           , button [onClick SubmitAttempt] [text "Submit Answer"]
            ]
     , p [] [text (" " ++ correctnessMessage model ++ ". ")]
     , p [] [text (" Points: " ++ toString model.marks ++ " out of " ++ toString model.attempts)]]
 
 correctnessMessage : Model -> String
 correctnessMessage model =
-  case model.lastAnswerCorrect of
-    Nothing -> "No Answers yet"
+  case model.lastAttemptCorrect of
+    Nothing -> "No Attempts yet"
     Just True -> "Correct"
     Just False -> "Incorrect"
 
