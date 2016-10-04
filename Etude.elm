@@ -204,8 +204,8 @@ sortByCorrectnessRatio : List Exercise -> List Exercise
 sortByCorrectnessRatio exercises =
   List.sortBy correctnessRatio exercises
 
-sortByCorrectnessRatioThenIndexes : List Exercise -> List Int -> List Exercise
-sortByCorrectnessRatioThenIndexes exercises indexes =
+groupExercisesByCorrectnessRatio : List Exercise -> List (List Exercise)
+groupExercisesByCorrectnessRatio exercises =
   let
     sortedExercises = sortByCorrectnessRatio exercises
     grouper x y =
@@ -214,7 +214,14 @@ sortByCorrectnessRatioThenIndexes exercises indexes =
         yRatio = correctnessRatio y
       in
         xRatio == yRatio
-    exerciseGroups = LE.groupWhile grouper sortedExercises
+  in
+    LE.groupWhile grouper sortedExercises
+
+sortByCorrectnessRatioThenIndexes : List Exercise -> List Int -> List Exercise
+sortByCorrectnessRatioThenIndexes exercises indexes =
+  let
+    exerciseGroups =
+      groupExercisesByCorrectnessRatio exercises
     indexesAndExerciseGroups =
       List.foldr
         (\exerciseGroup (resultList, indexesRemaining) ->
