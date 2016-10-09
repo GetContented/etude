@@ -1,8 +1,12 @@
+module Main exposing (main)
+
 import Html exposing (Html, div, text, input, p, button)
 import Html.Events exposing (onInput, onClick)
 import Html.App as App
 import Random
 import List.Extra as LE
+import Etude.Model as Model exposing (Model, allExercises, Answer, Exercise)
+
 
 main =
   App.program
@@ -12,38 +16,13 @@ main =
     , view = view
     }
 
--- MODEL
-
-type alias Question = String
-type alias Answer = String
-type alias CorrectAnswer = Answer
-type alias QAPair = (Question, Answer)
-
-type alias Exercise =
-  { question : Question
-  , answer : Answer
-  , correctCount : Int
-  , attemptCount : Int
-  }
-
-type alias Model =
-  { lastAttemptCorrect : Maybe Bool
-  , currentAttempt : Answer
-  , exercises : List Exercise
-  }
-
 init : (Model, Cmd Msg)
 init =
   let
-    exercises =
-      generatedExercises
     exercisesLength =
-      List.length exercises
+      List.length allExercises
   in
-    ({ lastAttemptCorrect = Nothing
-      , currentAttempt = ""
-      , exercises = exercises
-      }, shuffleExercises exercisesLength)
+    (Model.init, shuffleExercises exercisesLength)
 
 correctTally : Model -> Int
 correctTally { exercises } =
@@ -52,38 +31,6 @@ correctTally { exercises } =
 attemptTally : Model -> Int
 attemptTally { exercises } =
   List.sum <| List.map .attemptCount exercises
-
-generatedQAPairs : List QAPair
-generatedQAPairs =
-  let
-    range =
-      [1..20]
-    permutationPairs =
-      List.concatMap (\num -> List.map ((,) num) range) range
-  in
-    List.map
-      (\(num1, num2) ->
-        (toString num1 ++ " + " ++ toString num2, toString (num1 + num2)))
-      permutationPairs
-
-exerciseInit : Exercise
-exerciseInit =
-  { question = ""
-  , answer = ""
-  , correctCount = 0
-  , attemptCount = 0
-  }
-
-exerciseFromQAPair : QAPair -> Exercise
-exerciseFromQAPair (question, answer) =
-  { exerciseInit
-  | question = question
-  , answer = answer
-  }
-
-generatedExercises : List Exercise
-generatedExercises =
-  List.map exerciseFromQAPair generatedQAPairs
 
 getCorrectAnswer : Model -> Answer
 getCorrectAnswer model =
