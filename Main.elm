@@ -5,7 +5,9 @@ import Html.Events exposing (onInput, onClick)
 import Html.App as App
 import Random
 import List.Extra as LE
-import Etude.Model as Model exposing (Model, allExercises, Answer, Exercise)
+import Etude.Model as Model exposing
+  (Model, allExercises, Answer, Exercise, pointValue, updateCurrentExercise,
+   isCorrect, correctTally, attemptTally, applyToCurrentExerciseWithDefault)
 
 
 main =
@@ -23,59 +25,6 @@ init =
       List.length allExercises
   in
     (Model.init, shuffleExercises exercisesLength)
-
-correctTally : Model -> Int
-correctTally { exercises } =
-  List.sum <| List.map .correctCount exercises
-
-attemptTally : Model -> Int
-attemptTally { exercises } =
-  List.sum <| List.map .attemptCount exercises
-
-getCorrectAnswer : Model -> Answer
-getCorrectAnswer model =
-  applyToCurrentExerciseWithDefault model "" .answer
-
-applyToCurrentExerciseWithDefault : Model -> a -> (Exercise -> a) -> a
-applyToCurrentExerciseWithDefault model default f =
-  let
-    maybeCurrentExercise =
-      getMaybeCurrentExercise model
-    maybeResult = Maybe.map f maybeCurrentExercise
-  in
-    Maybe.withDefault default maybeResult
-
-updateCurrentExercise : Model -> (Exercise -> Exercise) -> Model
-updateCurrentExercise model updater =
-  case getMaybeCurrentExercise model of
-    Nothing ->
-      model
-    Just exercise ->
-      let
-        updatedExercise = updater exercise
-        exercisesTail = List.drop 1 model.exercises
-      in
-        { model | exercises = updatedExercise :: exercisesTail }
-
-
-getMaybeCurrentExercise : Model -> Maybe Exercise
-getMaybeCurrentExercise { exercises } =
-  case exercises of
-    [] ->
-      Nothing
-    exercise :: _ ->
-      Just exercise
-
-getAttempt : Model -> String
-getAttempt { currentAttempt } = currentAttempt
-
-isCorrect : Model -> Bool
-isCorrect model =
-  getAttempt model == getCorrectAnswer model
-
-pointValue : Model -> Int
-pointValue model =
-  if isCorrect model then 1 else 0
 
 -- UPDATE
 

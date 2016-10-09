@@ -1,4 +1,6 @@
-module Etude.Model exposing (Model, Answer, Question, init, allExercises, Exercise)
+module Etude.Model exposing
+  (Model, Answer, Question, init, allExercises, Exercise, pointValue, updateCurrentExercise,
+   isCorrect, correctTally, attemptTally, applyToCurrentExerciseWithDefault)
 
 import List
 
@@ -60,3 +62,56 @@ exerciseInit =
   , correctCount = 0
   , attemptCount = 0
   }
+
+correctTally : Model -> Int
+correctTally { exercises } =
+  List.sum <| List.map .correctCount exercises
+
+attemptTally : Model -> Int
+attemptTally { exercises } =
+  List.sum <| List.map .attemptCount exercises
+
+getCorrectAnswer : Model -> Answer
+getCorrectAnswer model =
+  applyToCurrentExerciseWithDefault model "" .answer
+
+applyToCurrentExerciseWithDefault : Model -> a -> (Exercise -> a) -> a
+applyToCurrentExerciseWithDefault model default f =
+  let
+    maybeCurrentExercise =
+      getMaybeCurrentExercise model
+    maybeResult = Maybe.map f maybeCurrentExercise
+  in
+    Maybe.withDefault default maybeResult
+
+updateCurrentExercise : Model -> (Exercise -> Exercise) -> Model
+updateCurrentExercise model updater =
+  case getMaybeCurrentExercise model of
+    Nothing ->
+      model
+    Just exercise ->
+      let
+        updatedExercise = updater exercise
+        exercisesTail = List.drop 1 model.exercises
+      in
+        { model | exercises = updatedExercise :: exercisesTail }
+
+
+getMaybeCurrentExercise : Model -> Maybe Exercise
+getMaybeCurrentExercise { exercises } =
+  case exercises of
+    [] ->
+      Nothing
+    exercise :: _ ->
+      Just exercise
+
+getAttempt : Model -> String
+getAttempt { currentAttempt } = currentAttempt
+
+isCorrect : Model -> Bool
+isCorrect model =
+  getAttempt model == getCorrectAnswer model
+
+pointValue : Model -> Int
+pointValue model =
+  if isCorrect model then 1 else 0
