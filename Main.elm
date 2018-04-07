@@ -1,8 +1,11 @@
 module Main exposing (main)
 
-import Html exposing (Html, div, text, input, p, button)
-import Html.Events exposing (onInput, onClick)
+import Html exposing (Html, div, text, input, p, button, Attribute)
+import Html.Events exposing (onInput, onClick, on, keyCode)
+import Html.Attributes exposing (value)
 import Random
+import Tuple
+import Json.Decode as Json
 import List.Extra as LE
 import Etude.Model as Model exposing
   (Model, allExercises, Answer, Exercise, pointValue, updateCurrentExercise,
@@ -30,6 +33,7 @@ init =
 type Msg = ChangeCurrentAttempt String
          | ShuffleExercises
          | SubmitAttempt
+         | KeyUp Int
          | UpdateExercisesOrder (List Int)
 
 shuffleExercises : Int -> Cmd Msg
@@ -38,20 +42,20 @@ shuffleExercises questionCount =
 
 reorderListByIndexes : List a -> List Int -> List a
 reorderListByIndexes items indexes =
-  let
-    zippedItems =
-      List.map2 (,) indexes items
-    reorderedZip =
-      List.sortBy (\(index, _) -> index) zippedItems
-  in
-    List.map (\(_, item) -> item) reorderedZip
-
+  items
+  |> List.map2 (,) indexes
+  |> List.sortBy Tuple.first
+  |> List.map Tuple.second
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     ChangeCurrentAttempt newAttempt ->
       ({ model | currentAttempt = newAttempt }, Cmd.none)
+    KeyUp key ->
+      case key of
+        13 -> update SubmitAttempt model
+        _ -> (model, Cmd.none)
     SubmitAttempt ->
       let
         updateExercise exercise =
@@ -64,6 +68,7 @@ update msg model =
           { modelWithUpdatedExercise
           | lastAttemptCorrect = Just (isCorrect model)
           , exercises = rotateList modelWithUpdatedExercise.exercises
+          , currentAttempt = ""
           }
         exerciseCount = List.length updatedModel.exercises
       in
@@ -147,7 +152,7 @@ view : Model -> Html Msg
 view model =
   div []
     [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
-    , p [] [ input [onInput ChangeCurrentAttempt] []
+    , p [] [ input [onInput ChangeCurrentAttempt, onKeyUp KeyUp, value model.currentAttempt] []
            , button [onClick SubmitAttempt] [text "Submit Answer"]
            ]
     , p [] [text (" " ++ correctnessMessage model ++ ". ")]
@@ -163,3 +168,7 @@ correctnessMessage model =
 getQuestion : Model -> Answer
 getQuestion model =
   applyToCurrentExerciseWithDefault model "" .question
+
+onKeyUp : (Int -> msg) -> Attribute msg
+onKeyUp tagger =
+  on "keyup" (Json.map tagger keyCode)

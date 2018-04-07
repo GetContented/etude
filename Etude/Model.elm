@@ -46,13 +46,13 @@ generatedQAPairs : List QAPair
 generatedQAPairs =
   let
     range =
-      List.range 1 20
+      List.range 1 12
     permutationPairs =
       List.concatMap (\num -> List.map ((,) num) range) range
   in
     List.map
       (\(num1, num2) ->
-        (toString num1 ++ " + " ++ toString num2, toString (num1 + num2)))
+        (toString num1 ++ " x " ++ toString num2, toString (num1 * num2)))
       permutationPairs
 
 exerciseInit : Exercise

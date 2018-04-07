@@ -20,7 +20,11 @@ It should have these features:
 8. √ make it generate the questions from permutations
 9. √ make it randomize the question order
 10. √ make it keep the past questions and show incorrectly answered items more frequently
-10. a) refactor sortByCorrectnessRatioThenIndexes until it's not so complicated
-11. add in subtraction, multiplication, division
-12. make tests of 20 random questions each, but let them continue to pick from the least correct ones
-13. make it clear the text field after an answer
+11. √ change to multiplication for times tables
+12. √ make it clear the text field after an answer
+13. refactor sortByCorrectnessRatioThenIndexes until it's not so complicated
+14. add in addition, multiplication, division
+15. make tests of 20 random questions each, but let them continue to pick from the least correct ones
+16. make the UI easier (enter should work)
+17. show the wrong answers properly
+18. think about what's needed when learning
