@@ -28,3 +28,5 @@ It should have these features:
 16. make the UI easier (enter should work)
 17. show the wrong answers properly
 18. think about what's needed when learning
+  - it should show you the wrong answer, and a table of the correct answers
+  - it should present you with the answer for ones you didn't get right last time, then slowly turn that mode off
