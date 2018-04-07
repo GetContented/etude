@@ -2,7 +2,6 @@ module Main exposing (main)
 
 import Html exposing (Html, div, text, input, p, button)
 import Html.Events exposing (onInput, onClick)
-import Html.App as App
 import Random
 import List.Extra as LE
 import Etude.Model as Model exposing
@@ -11,7 +10,7 @@ import Etude.Model as Model exposing
 
 
 main =
-  App.program
+  Html.program
     { init = init
     , update = update
     , subscriptions = subscriptions
@@ -55,18 +54,18 @@ update msg model =
       ({ model | currentAttempt = newAttempt }, Cmd.none)
     SubmitAttempt ->
       let
-      updateExercise exercise =
-        { exercise
-        | attemptCount = exercise.attemptCount + 1
-        , correctCount = exercise.correctCount + pointValue model
-        }
-      modelWithUpdatedExercise = updateCurrentExercise model updateExercise
-      updatedModel =
-        { modelWithUpdatedExercise
-        | lastAttemptCorrect = Just (isCorrect model)
-        , exercises = rotateList modelWithUpdatedExercise.exercises
-        }
-      exerciseCount = List.length updatedModel.exercises
+        updateExercise exercise =
+          { exercise
+          | attemptCount = exercise.attemptCount + 1
+          , correctCount = exercise.correctCount + pointValue model
+          }
+        modelWithUpdatedExercise = updateCurrentExercise model updateExercise
+        updatedModel =
+          { modelWithUpdatedExercise
+          | lastAttemptCorrect = Just (isCorrect model)
+          , exercises = rotateList modelWithUpdatedExercise.exercises
+          }
+        exerciseCount = List.length updatedModel.exercises
       in
         (updatedModel, shuffleExercises exerciseCount)
     ShuffleExercises ->

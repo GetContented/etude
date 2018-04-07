@@ -46,7 +46,7 @@ generatedQAPairs : List QAPair
 generatedQAPairs =
   let
     range =
-      [1..20]
+      List.range 1 20
     permutationPairs =
       List.concatMap (\num -> List.map ((,) num) range) range
   in
