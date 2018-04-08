@@ -150,13 +150,19 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
-    , p [] [ input [onInput ChangeCurrentAttempt, onKeyUp KeyUp, value model.currentAttempt] []
-           , button [onClick SubmitAttempt] [text "Submit Answer"]
-           ]
-    , p [] [text (" " ++ correctnessMessage model ++ ". ")]
-    , p [] [text (" Points: " ++ toString (correctTally model) ++ " out of " ++ toString (attemptTally model))]]
+  let
+    exerciseDiv exercise =
+      div [] [ p [] [text <| exercise.question ++ " -- " ++ toString exercise.correctCount ++ " / "  ++ toString exercise.attemptCount]]
+  in
+    div []
+      [ p [] [text ("Question: " ++ getQuestion model ++ "?")]
+      , p [] [ input [onInput ChangeCurrentAttempt, onKeyUp KeyUp, value model.currentAttempt] []
+             , button [onClick SubmitAttempt] [text "Submit Answer"]
+             ]
+      , p [] [text (" " ++ correctnessMessage model ++ ". ")]
+      , p [] [text (" Points: " ++ toString (correctTally model) ++ " out of " ++ toString (attemptTally model))]
+      , div [] (List.map exerciseDiv model.exercises)
+      ]
 
 correctnessMessage : Model -> String
 correctnessMessage model =

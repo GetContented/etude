@@ -1,32 +1,24 @@
 # Etude
 
-To improve simple math skill, we want a program that will generate and ask a bunch of maths questions.
+To make committing information to memory easier, we want a program that will help build and order flash cards for better rote learning.
 
 It should have these features:
 
-* web browser access with persistent state
-* generates math questions for addition, subtraction, multiplication and division
-* selects questions to ask based on a weighted scale using history of incorrect answers to drive frequency
+* web browser access with (hopefully transferrable) persistent state
+* the early version can generates math questions for addition, subtraction, multiplication and division
+* selects which material to present based on how well the student knows a piece of info. we use a variety of methods to determine the likelihood of a piece of info being known, such as student indication, how often they have a quick response time, and how often they get the information wrong or right.
 
-## Development Stages
+## Development Tasks
 
-1. √ hello world
-2. √ what's 1 + 1 (hard-coded), and take the answer then display it
-3. √ give a PointValue to the answer, and display it
-4. √ change so that the answer is only calculated on a button press
-5. √ make it work in a loop, tallying correct and incorrect answers
-6. √ extract the mechanism to deal with questions, and the single 1 + 1 hard-coded question into data
-7. √ make it work with three questions, iterating over them
-8. √ make it generate the questions from permutations
-9. √ make it randomize the question order
-10. √ make it keep the past questions and show incorrectly answered items more frequently
-11. √ change to multiplication for times tables
-12. √ make it clear the text field after an answer
-13. refactor sortByCorrectnessRatioThenIndexes until it's not so complicated
-14. add in addition, multiplication, division
-15. make tests of 20 random questions each, but let them continue to pick from the least correct ones
-16. make the UI easier (enter should work)
-17. show the wrong answers properly
-18. think about what's needed when learning
-  - it should show you the wrong answer, and a table of the correct answers
-  - it should present you with the answer for ones you didn't get right last time, then slowly turn that mode off
+* refactor sortByCorrectnessRatioThenIndexes until it's not so complicated
+* add in addition, multiplication, division
+* make tests of 20 random questions each, but let them continue to pick from the least correct ones
+* make the UI easier (enter should work)
+* show the wrong answers properly
+* think about the problems and what's needed when learning
+  - we want to encourage automatic response (ie rote learning) for times tables and simple arithmetic.
+  - the concern is either the student has it in their memory, or they don't. That's all we're going for here.
+  - our premise is that to traverse from the short term to the long term memory one starts with the answer, then
+    slowly take the answer away, increasing the amount of time between the same piece of information being repeated
+  - we need to get the student to indicate if they know something or not (which we can sometimes work out by average time to respond, and/or give them a way to mark that they think they know it - it then goes into maintenance)
+
